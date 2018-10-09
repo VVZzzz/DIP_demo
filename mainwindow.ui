@@ -46,7 +46,14 @@
     </property>
     <addaction name="action_OPEN"/>
    </widget>
+   <widget class="QMenu" name="menu_G">
+    <property name="title">
+     <string>灰度处理(&amp;G)</string>
+    </property>
+    <addaction name="action_RGB2GRAY"/>
+   </widget>
    <addaction name="menu_F"/>
+   <addaction name="menu_G"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -55,6 +62,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_RESTORE"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_OPEN">
@@ -66,6 +74,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_RESTORE">
+   <property name="text">
+    <string>恢复(&amp;R)</string>
+   </property>
+   <property name="toolTip">
+    <string>恢复(R)</string>
+   </property>
+  </action>
+  <action name="action_RGB2GRAY">
+   <property name="text">
+    <string>rgb2gray(&amp;B)</string>
+   </property>
+   <property name="toolTip">
+    <string>rgb2gray(B)</string>
    </property>
   </action>
  </widget>

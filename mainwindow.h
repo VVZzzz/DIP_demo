@@ -4,12 +4,14 @@
 #include <QMainWindow>
 #include <QString>
 #include <QFileInfo>
+#include "runtool.h"
 
 class QGraphicsView;
 class QGraphicsScene;
 class QImage;
 class QLabel;
 class QGraphicsPixmapItem;
+
 
 #define WINDOW_ERROR "error!"
 #define WINDOW_WARNING "warning!"
@@ -28,6 +30,10 @@ class MainWindow : public QMainWindow {
 
 private slots:
     void on_action_OPEN_triggered();
+
+    void on_action_RESTORE_triggered();
+
+    void on_action_RGB2GRAY_triggered();
 
 private:
   void cleanImage();

@@ -26,10 +26,13 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    runtool.cpp \
+    runtool.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    runtool.h
 
 FORMS += \
         mainwindow.ui

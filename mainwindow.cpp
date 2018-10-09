@@ -1,14 +1,16 @@
 #include "mainwindow.h"
 #include <QColor>
+#include <QDebug>
 #include <QFile>
 #include <QFileDialog>
-#include <QFileInfo>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QMessageBox>
+#include <QPixmap>
 #include <QRectF>
 #include <QString>
+#include "runtool.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -27,9 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
   setWindowTitle("DIP_demo");
 }
 
-MainWindow::~MainWindow() {
-  delete ui;
-}
+MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::cleanImage() {
   leftScene->clear();
@@ -75,4 +75,15 @@ void MainWindow::on_action_OPEN_triggered() {
                        QString::number(tempPixmap.width()) + "x" +
                        QString::number(tempPixmap.height()));
   }
+}
+
+void MainWindow::on_action_RESTORE_triggered() {
+  updateRighView(leftPixmapItem->pixmap());
+  ui->rightGrahpicsView->resetTransform();
+}
+
+void MainWindow::on_action_RGB2GRAY_triggered() {
+  QImage img = leftPixmapItem->pixmap().toImage();
+  RunTool::rgb2gray();
+  updateRighView(QPixmap::fromImage(img));
 }
