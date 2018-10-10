@@ -5,11 +5,13 @@
 #include <QFileDialog>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QRectF>
 #include <QString>
+#include "mygraphicsview.h"
 #include "runtool.h"
 #include "ui_mainwindow.h"
 
@@ -23,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
   leftScene->setBackgroundBrush(QColor::fromRgb(224, 224, 224));
   ui->leftGraphicsView->setScene(leftScene);
   rightScene->setBackgroundBrush(QColor::fromRgb(224, 224, 224));
-  ui->rightGrahpicsView->setScene(rightScene);
+  ui->rightGraphicsView->setScene(rightScene);
   ui->statusBar->addPermanentWidget(sizeLabel);
 
   setWindowTitle("DIP_demo");
@@ -31,15 +33,21 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() { delete ui; }
 
+void MainWindow::onDeResolution(int para) {
+  QImage img = leftPixmapItem->pixmap().toImage();
+  QImage newimg = RunTool::deresolution(img, para);
+  updateRighView(QPixmap::fromImage(newimg));
+}
+
 void MainWindow::cleanImage() {
   leftScene->clear();
   ui->leftGraphicsView->resetTransform();
   rightScene->clear();
-  ui->rightGrahpicsView->resetTransform();
+  ui->rightGraphicsView->resetTransform();
   sizeLabel->clear();
 }
 
-void MainWindow::updateRighView(QPixmap &newPixmap) {
+void MainWindow::updateRighView(const QPixmap &newPixmap) {
   rightPixmapItem->setPixmap(
       newPixmap);  //如果直接setPixmap,旧的Qpixmap会被收回。
 }
@@ -79,11 +87,37 @@ void MainWindow::on_action_OPEN_triggered() {
 
 void MainWindow::on_action_RESTORE_triggered() {
   updateRighView(leftPixmapItem->pixmap());
-  ui->rightGrahpicsView->resetTransform();
+  ui->rightGraphicsView->resetTransform();
+  ui->leftGraphicsView->resetTransform();
 }
 
 void MainWindow::on_action_RGB2GRAY_triggered() {
   QImage img = leftPixmapItem->pixmap().toImage();
-  RunTool::rgb2gray();
+  RunTool::rgb2gray(img);
   updateRighView(QPixmap::fromImage(img));
+}
+
+void MainWindow::on_action_DEGARY_triggered() {
+  bool ok;
+  int para = QInputDialog::getInt(
+      this, "ReGray", "Input the level for gray level!", 2, 2, 256, 2, &ok);
+  if (ok) {
+    QImage img = leftPixmapItem->pixmap().toImage();
+    QImage newimg = RunTool::regray(img, para);
+    updateRighView(QPixmap::fromImage(newimg));
+  }
+}
+
+void MainWindow::on_action_DERESOLUTION_triggered() {
+  /*
+bool ok;
+int para = QInputDialog::getInt(this, "DeResolution",
+                                "Input the level for resolution level!", 1, 1,
+                                100, 1, &ok);
+if (ok) {
+  QImage img = leftPixmapItem->pixmap().toImage();
+  QImage newimg = RunTool::deresolution(img, para);
+  updateRighView(QPixmap::fromImage(newimg));
+}
+*/
 }

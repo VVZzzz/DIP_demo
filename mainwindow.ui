@@ -20,10 +20,10 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QGraphicsView" name="leftGraphicsView"/>
+         <widget class="MyGraphicsView" name="leftGraphicsView"/>
         </item>
         <item>
-         <widget class="QGraphicsView" name="rightGrahpicsView"/>
+         <widget class="MyGraphicsView" name="rightGraphicsView"/>
         </item>
        </layout>
       </item>
@@ -37,7 +37,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_F">
@@ -50,10 +50,17 @@
     <property name="title">
      <string>灰度处理(&amp;G)</string>
     </property>
-    <addaction name="action_RGB2GRAY"/>
+    <addaction name="action_DEGARY"/>
+   </widget>
+   <widget class="QMenu" name="menu_O">
+    <property name="title">
+     <string>几何变换(&amp;O)</string>
+    </property>
+    <addaction name="action_DERESOLUTION"/>
    </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_G"/>
+   <addaction name="menu_O"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -63,6 +70,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_RESTORE"/>
+   <addaction name="action_RGB2GRAY"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_OPEN">
@@ -92,8 +100,28 @@
     <string>rgb2gray(B)</string>
    </property>
   </action>
+  <action name="action_DEGARY">
+   <property name="text">
+    <string>灰度降级(&amp;D)</string>
+   </property>
+   <property name="toolTip">
+    <string>灰度降级(D)</string>
+   </property>
+  </action>
+  <action name="action_DERESOLUTION">
+   <property name="text">
+    <string>降低分辨率(&amp;S)</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>mygraphicsview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

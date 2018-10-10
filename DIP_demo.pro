@@ -28,14 +28,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     runtool.cpp \
-    runtool.cpp
+    mygraphicsview.cpp \
+    dlg_sliderbar.cpp
 
 HEADERS += \
         mainwindow.h \
-    runtool.h
+    runtool.h \
+    mygraphicsview.h \
+    dlg_sliderbar.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    dlg_sliderbar.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

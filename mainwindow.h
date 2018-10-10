@@ -1,9 +1,10 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QFileInfo>
 #include <QMainWindow>
 #include <QString>
-#include <QFileInfo>
+#include "mygraphicsview.h"
 #include "runtool.h"
 
 class QGraphicsView;
@@ -11,7 +12,6 @@ class QGraphicsScene;
 class QImage;
 class QLabel;
 class QGraphicsPixmapItem;
-
 
 #define WINDOW_ERROR "error!"
 #define WINDOW_WARNING "warning!"
@@ -28,16 +28,22 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
-private slots:
-    void on_action_OPEN_triggered();
+ public slots:
+  void onDeResolution(int para);
+ private slots:
+  void on_action_OPEN_triggered();
 
-    void on_action_RESTORE_triggered();
+  void on_action_RESTORE_triggered();
 
-    void on_action_RGB2GRAY_triggered();
+  void on_action_RGB2GRAY_triggered();
 
-private:
+  void on_action_DEGARY_triggered();
+
+  void on_action_DERESOLUTION_triggered();
+
+ private:
   void cleanImage();
-  void updateRighView(QPixmap &newPixmap);
+  void updateRighView(const QPixmap &newPixmap);
 
  private:
   Ui::MainWindow *ui;
@@ -51,7 +57,6 @@ private:
   QLabel *sizeLabel;
   QString filePath;
   QFileInfo fileInfo;
-
 };
 
 #endif  // MAINWINDOW_H
