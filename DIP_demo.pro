@@ -29,13 +29,15 @@ SOURCES += \
         mainwindow.cpp \
     runtool.cpp \
     mygraphicsview.cpp \
-    slidedlg.cpp
+    slidedlg.cpp \
+    myhistogram.cpp
 
 HEADERS += \
         mainwindow.h \
     runtool.h \
     mygraphicsview.h \
-    slidedlg.h
+    slidedlg.h \
+    myhistogram.h
 
 FORMS += \
         mainwindow.ui \

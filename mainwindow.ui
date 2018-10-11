@@ -51,6 +51,7 @@
      <string>灰度处理(&amp;G)</string>
     </property>
     <addaction name="action_DEGARY"/>
+    <addaction name="action_HISTOGRAM"/>
    </widget>
    <widget class="QMenu" name="menu_O">
     <property name="title">
@@ -111,6 +112,14 @@
   <action name="action_DERESOLUTION">
    <property name="text">
     <string>降低分辨率(&amp;S)</string>
+   </property>
+  </action>
+  <action name="action_HISTOGRAM">
+   <property name="text">
+    <string>直方图(&amp;H)</string>
+   </property>
+   <property name="toolTip">
+    <string>直方图(H)</string>
    </property>
   </action>
  </widget>

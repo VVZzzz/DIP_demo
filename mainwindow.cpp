@@ -10,8 +10,10 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QRectF>
+#include <QScrollArea>
 #include <QString>
 #include "mygraphicsview.h"
+#include "myhistogram.h"
 #include "runtool.h"
 #include "ui_mainwindow.h"
 
@@ -128,4 +130,22 @@ void MainWindow::on_slidebar_change() {
     }
     updateRighView(QPixmap::fromImage(newimg));
   }
+}
+
+void MainWindow::on_action_HISTOGRAM_triggered() {
+  QDialog *histogram_dlg = new QDialog(this);
+  QScrollArea *scrollarea = new QScrollArea(histogram_dlg);
+  MyHistogram *histogram = new MyHistogram(scrollarea);
+  if (histogram == nullptr) return;
+  histogram->setHistogram(rightPixmapItem->pixmap().toImage());
+  scrollarea->setWidget(histogram);
+  QHBoxLayout *hlayout = new QHBoxLayout(histogram_dlg);
+  hlayout->addWidget(scrollarea);
+  histogram_dlg->setLayout(hlayout);
+  histogram->resize(800, 780);
+  histogram_dlg->setFixedWidth(820);
+  scrollarea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  scrollarea->adjustSize();
+  histogram_dlg->setWindowTitle("Histogram");
+  histogram_dlg->show();
 }

@@ -5,6 +5,8 @@
 #include <QRgb>
 
 namespace RunTool {
+#define max(a, b) a > b ? a : b
+#define min(a, b) a < b ? a : b
 void rgb2gray(QImage& img);
 QImage regray(QImage& img, int n);
 QImage deresolution(QImage& img, int n);

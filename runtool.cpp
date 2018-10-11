@@ -47,15 +47,15 @@ QImage deresolution(QImage &img, int n) {
   for (int j = 0; j * n < h; j++) {
     uchar *originlpix = img.scanLine(n * j);
     for (int i = 0; i * n < w; i++) {
-      uchar r = *(originlpix + i * n * 4);
+      uchar b = *(originlpix + i * n * 4);
       uchar g = *(originlpix + i * n * 4 + 1);
-      uchar b = *(originlpix + i * n * 4 + 2);
+      uchar r = *(originlpix + i * n * 4 + 2);
       for (int j_ = 0; (j_ < n) && ((n * j + j_) < h); j_++) {
         uchar *newlpix = newimg.scanLine(n * j + j_);
         for (int k_ = 0; (k_ < n) && ((n * i + k_) < w); k_++) {
-          *(newlpix + (n * i + k_) * 4) = r;
+          *(newlpix + (n * i + k_) * 4) = b;
           *(newlpix + (n * i + k_) * 4 + 1) = g;
-          *(newlpix + (n * i + k_) * 4 + 2) = b;
+          *(newlpix + (n * i + k_) * 4 + 2) = r;
         }
       }
     }

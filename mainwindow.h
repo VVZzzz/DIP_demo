@@ -43,7 +43,9 @@ class MainWindow : public QMainWindow {
   void on_slidebar_change();
 
 
- private:
+  void on_action_HISTOGRAM_triggered();
+
+private:
   enum PROCESS_CATEGORY { DERESOLUTION, DEGRAY };
   void cleanImage();
   void updateRighView(const QPixmap &newPixmap);
