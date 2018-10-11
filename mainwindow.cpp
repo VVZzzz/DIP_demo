@@ -28,16 +28,13 @@ MainWindow::MainWindow(QWidget *parent)
   ui->rightGraphicsView->setScene(rightScene);
   ui->statusBar->addPermanentWidget(sizeLabel);
 
+  slidedlg = new SlideDlg(this);
+  connect(slidedlg->getSliderP(), SIGNAL(valueChanged(int)), this,
+          SLOT(on_slidebar_change()));
   setWindowTitle("DIP_demo");
 }
 
 MainWindow::~MainWindow() { delete ui; }
-
-void MainWindow::onDeResolution(int para) {
-  QImage img = leftPixmapItem->pixmap().toImage();
-  QImage newimg = RunTool::deresolution(img, para);
-  updateRighView(QPixmap::fromImage(newimg));
-}
 
 void MainWindow::cleanImage() {
   leftScene->clear();
@@ -98,26 +95,37 @@ void MainWindow::on_action_RGB2GRAY_triggered() {
 }
 
 void MainWindow::on_action_DEGARY_triggered() {
-  bool ok;
-  int para = QInputDialog::getInt(
-      this, "ReGray", "Input the level for gray level!", 2, 2, 256, 2, &ok);
-  if (ok) {
-    QImage img = leftPixmapItem->pixmap().toImage();
-    QImage newimg = RunTool::regray(img, para);
-    updateRighView(QPixmap::fromImage(newimg));
+  if (slidedlg != nullptr) {
+    category = DEGRAY;
+    slidedlg->setRange(2, 100, 2);
+    slidedlg->show();
   }
 }
 
 void MainWindow::on_action_DERESOLUTION_triggered() {
-  /*
-bool ok;
-int para = QInputDialog::getInt(this, "DeResolution",
-                                "Input the level for resolution level!", 1, 1,
-                                100, 1, &ok);
-if (ok) {
-  QImage img = leftPixmapItem->pixmap().toImage();
-  QImage newimg = RunTool::deresolution(img, para);
-  updateRighView(QPixmap::fromImage(newimg));
+  if (slidedlg != nullptr) {
+    category = DERESOLUTION;
+    slidedlg->setRange(1, 100, 1);
+    slidedlg->show();
+  }
 }
-*/
+
+void MainWindow::on_slidebar_change() {
+  if (slidedlg != nullptr) {
+    int para = slidedlg->getPara();
+    QImage img = leftPixmapItem->pixmap().toImage();
+    QImage newimg;
+    switch (category) {
+      case DERESOLUTION:
+        newimg = RunTool::deresolution(img, para);
+        break;
+      case DEGRAY:
+        newimg = RunTool::regray(img, para);
+        break;
+      default:
+        newimg = img;
+        break;
+    }
+    updateRighView(QPixmap::fromImage(newimg));
+  }
 }

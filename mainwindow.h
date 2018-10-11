@@ -6,6 +6,7 @@
 #include <QString>
 #include "mygraphicsview.h"
 #include "runtool.h"
+#include "slidedlg.h"
 
 class QGraphicsView;
 class QGraphicsScene;
@@ -28,8 +29,6 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
- public slots:
-  void onDeResolution(int para);
  private slots:
   void on_action_OPEN_triggered();
 
@@ -41,7 +40,11 @@ class MainWindow : public QMainWindow {
 
   void on_action_DERESOLUTION_triggered();
 
+  void on_slidebar_change();
+
+
  private:
+  enum PROCESS_CATEGORY { DERESOLUTION, DEGRAY };
   void cleanImage();
   void updateRighView(const QPixmap &newPixmap);
 
@@ -57,6 +60,9 @@ class MainWindow : public QMainWindow {
   QLabel *sizeLabel;
   QString filePath;
   QFileInfo fileInfo;
+
+  SlideDlg *slidedlg;
+  PROCESS_CATEGORY category;
 };
 
 #endif  // MAINWINDOW_H
