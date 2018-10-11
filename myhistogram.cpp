@@ -7,6 +7,8 @@ MyHistogram::MyHistogram(QWidget *parent) : QLabel(parent) {
       blueHistogram[256] = 256;
   grayHistogram[257] = redHistogram[257] = greenHistogram[257] =
       blueHistogram[257] = -1;
+  grayHistogram[258] = redHistogram[258] = greenHistogram[258] =
+      blueHistogram[258] = -1;
 }
 
 void MyHistogram::setHistogram(const QImage &img) {
@@ -17,10 +19,10 @@ void MyHistogram::setHistogram(const QImage &img) {
     const uchar *lpix = img.scanLine(y);
     const uchar *lpix2 = grayImg.scanLine(y);
     for (int x = 0; x < w; x++) {
-      uchar red = *(lpix + int(x >> 2) + 2);
-      uchar green = *(lpix + int(x >> 2) + 1);
-      uchar blue = *(lpix + int(x >> 2));
-      uchar gray = *(lpix2 + int(x >> 2));
+      uchar red = *(lpix + x * 4 + 2);
+      uchar green = *(lpix + x * 4 + 1);
+      uchar blue = *(lpix + x * 4);
+      uchar gray = *(lpix2 + x * 4);
       redHistogram[red]++;
       greenHistogram[green]++;
       blueHistogram[blue]++;
@@ -42,6 +44,16 @@ void MyHistogram::setHistogram(const QImage &img) {
       else if (gray < grayHistogram[256])
         grayHistogram[256] = gray;
     }
+  }
+  for (int i = 0; i < 256; i++) {
+    if (grayHistogram[i] > grayHistogram[258])
+      grayHistogram[258] = grayHistogram[i];
+    if (redHistogram[i] > redHistogram[258])
+      redHistogram[258] = redHistogram[i];
+    if (greenHistogram[i] > greenHistogram[258])
+      greenHistogram[258] = greenHistogram[i];
+    if (blueHistogram[i] > blueHistogram[258])
+      blueHistogram[258] = blueHistogram[i];
   }
 }
 
@@ -68,30 +80,47 @@ void MyHistogram::drawHistogram(int xBase, int yBase, int height, int flag) {
       painter.setPen(Qt::black);
       text = "Gray Histogram";
       temp = grayHistogram;
+      painter.drawText(xBase + 40, yBase - height - 10,
+                       tr("GRAY LEVELS HISTOGRAM"));
+      painter.drawText(xBase + 100, yBase + 15, tr("Intensity"));
+      painter.drawText(xBase - 84, yBase - height / 2 + 5, tr("Pixels count"));
       break;
     case 1:
       painter.setPen(Qt::red);
       text = "Red Histogram";
       temp = redHistogram;
+      painter.drawText(xBase + 25, yBase - height - 10,
+                       tr("RED COMPONENT HISTOGRAM"));
+      painter.drawText(xBase + 100, yBase + 15, tr("Intensity"));
+      painter.drawText(xBase - 84, yBase - height / 2 + 5, tr("Pixels count"));
       break;
     case 2:
       painter.setPen(Qt::green);
       text = "Green Histogram";
       temp = greenHistogram;
+      painter.drawText(xBase + 15, yBase - height - 10,
+                       tr("GREEN COMPONENT HISTOGRAM"));
+
+      painter.drawText(xBase + 100, yBase + 15, tr("Intensity"));
+      painter.drawText(xBase - 84, yBase - height / 2 + 5, tr("Pixels count"));
       break;
     case 3:
       painter.setPen(Qt::blue);
       text = "Blue Histogram";
       temp = blueHistogram;
+      painter.drawText(xBase + 20, yBase - height - 10,
+                       tr("BLUE COMPONENT HISTOGRAM"));
+      painter.drawText(xBase + 100, yBase + 15, tr("Intensity"));
+      painter.drawText(xBase - 84, yBase - height / 2 + 5, tr("Pixels count"));
       break;
     default:
       break;
   }
-  float max_ = max(max(grayHistogram[257], redHistogram[257]),
-                   max(greenHistogram[257], blueHistogram[257]));
+  float max_ = max(max(grayHistogram[258], redHistogram[258]),
+                   max(greenHistogram[258], blueHistogram[258]));
   for (int i = 0; i < 256; i++) {
     painter.drawLine(xBase + 1 + i, yBase, xBase + 1 + i,
-                     yBase - (float)(256. / max_) * (float)temp[i]);
+                     yBase - (float)(256. / max_) * (float)(*(temp + i)));
   }
 
   painter.drawText(xBase, yBase + 25, tr("dark"));
@@ -99,10 +128,12 @@ void MyHistogram::drawHistogram(int xBase, int yBase, int height, int flag) {
 
   painter.setPen(Qt::black);
 
+  /*
   painter.drawText(xBase + 25, yBase - height - 10, text);
 
   painter.drawText(xBase + 100, yBase + 15, tr("Intensity"));
   painter.drawText(xBase - 84, yBase - height / 2 + 5, tr("Pixels count"));
+  */
 
   // abscissa
   painter.drawLine(xBase, yBase, xBase + 256 + 1, yBase);
