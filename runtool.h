@@ -3,6 +3,7 @@
 #include <QColor>
 #include <QImage>
 #include <QRgb>
+#include <QStringList>
 
 namespace RunTool {
 #define max(a, b) a > b ? a : b
@@ -10,7 +11,7 @@ namespace RunTool {
 void rgb2gray(QImage& img);
 QImage regray(QImage& img, int n);
 QImage deresolution(QImage& img, int n);
-
+QImage adddenoise(QImage& img, QStringList& fileslist);
 }  // namespace RunTool
 
 #endif  // RUNTOOL_H

@@ -59,9 +59,16 @@
     </property>
     <addaction name="action_DERESOLUTION"/>
    </widget>
+   <widget class="QMenu" name="menu_H">
+    <property name="title">
+     <string>去噪差分(&amp;H)</string>
+    </property>
+    <addaction name="action_ADDDENOISE"/>
+   </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_G"/>
    <addaction name="menu_O"/>
+   <addaction name="menu_H"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -120,6 +127,14 @@
    </property>
    <property name="toolTip">
     <string>直方图(H)</string>
+   </property>
+  </action>
+  <action name="action_ADDDENOISE">
+   <property name="text">
+    <string>相加去噪(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>相加去噪(A)</string>
    </property>
   </action>
  </widget>

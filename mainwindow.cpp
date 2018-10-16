@@ -12,6 +12,7 @@
 #include <QRectF>
 #include <QScrollArea>
 #include <QString>
+#include <QStringList>
 #include "mygraphicsview.h"
 #include "myhistogram.h"
 #include "runtool.h"
@@ -148,4 +149,25 @@ void MainWindow::on_action_HISTOGRAM_triggered() {
   scrollarea->adjustSize();
   histogram_dlg->setWindowTitle("Histogram");
   histogram_dlg->show();
+}
+
+void MainWindow::on_action_ADDDENOISE_triggered() {
+  QStringList fileslist;
+  fileslist = QFileDialog::getOpenFileNames(
+      this, tr("Open image"), "C:/Users",
+      tr("All Files (*);;"
+         "All Images (*.bpm *.gif *.jpg *.jpeg *.png *.ppm *.xbm *.xpm);;"
+         "Image BPM (*.bpm);;"
+         "Image GIF (*.gif);;"
+         "Image JPG (*.jpg);;"
+         "Image JPEG (*.jpeg);;"
+         "Image PNG (*.png);;"
+         "Image PPM (*.ppm);;"
+         "Image XBM (*.xbm);;"
+         "Image XPM (*.xpm);;"));
+  if (!fileslist.isEmpty()) {
+    QImage img = leftPixmapItem->pixmap().toImage();
+    QImage newimg = RunTool::adddenoise(img, fileslist);
+    updateRighView(QPixmap::fromImage(newimg));
+  }
 }

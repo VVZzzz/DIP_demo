@@ -63,4 +63,55 @@ QImage deresolution(QImage &img, int n) {
   return newimg;
 }
 
+QImage adddenoise(QImage &img, QStringList &fileslist) {
+  unsigned w = img.width(), h = img.height();
+  QImage newimg(w, h, QImage::Format_RGB32);
+
+  int ***pVal = new int **[h];  //[0]:b [1]:g [2]:r
+  for (int i = 0; i < h; i++) {
+    pVal[i] = new int *[w];
+    for (int j = 0; j < w; j++) {
+      pVal[i][j] = new int[3]{0};
+    }
+  }
+
+  QStringList::const_iterator constIterator;
+  for (constIterator = fileslist.constBegin();
+       constIterator != fileslist.constEnd(); constIterator++) {
+    QImage *pImg = new QImage(*constIterator);
+    for (int j = 0; j < h; j++) {
+      uchar *originlpix = pImg->scanLine(j);
+      for (int i = 0; i < w; i++) {
+        pVal[j][i][0] += *(originlpix + i * 4);
+        pVal[j][i][1] += *(originlpix + i * 4 + 1);
+        pVal[j][i][2] += *(originlpix + i * 4 + 2);
+      }
+    }
+    delete pImg;
+  }
+
+  for (int j = 0; j < h; j++) {
+    uchar *originlpix = img.scanLine(j);
+    uchar *newlpix = newimg.scanLine(j);
+    for (int i = 0; i < w; i++) {
+      pVal[j][i][0] += *(originlpix + i * 4);
+      *(newlpix + i * 4) = pVal[j][i][0] / (fileslist.size() + 1);
+
+      pVal[j][i][1] += *(originlpix + i * 4 + 1);
+      *(newlpix + i * 4 + 1) = pVal[j][i][1] / (fileslist.size() + 1);
+      pVal[j][i][2] += *(originlpix + i * 4 + 2);
+      *(newlpix + i * 4 + 2) = pVal[j][i][2] / (fileslist.size() + 1);
+    }
+  }
+  for (int j = 0; j < h; j++) {
+    for (int k = 0; k < w; k++) {
+      delete[] pVal[j][k];
+    }
+    delete[] pVal[j];
+  }
+  delete pVal;
+
+  return newimg;
+}
+
 }  // namespace RunTool

@@ -45,6 +45,8 @@ class MainWindow : public QMainWindow {
 
   void on_action_HISTOGRAM_triggered();
 
+  void on_action_ADDDENOISE_triggered();
+
 private:
   enum PROCESS_CATEGORY { DERESOLUTION, DEGRAY };
   void cleanImage();
