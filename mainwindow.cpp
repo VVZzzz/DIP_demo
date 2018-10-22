@@ -170,4 +170,5 @@ void MainWindow::on_action_ADDDENOISE_triggered() {
     QImage newimg = RunTool::adddenoise(img, fileslist);
     updateRighView(QPixmap::fromImage(newimg));
   }
+  QMessageBox::information(this,QString("Success!"),QString("operator compelet!"));
 }
