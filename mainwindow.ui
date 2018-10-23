@@ -65,10 +65,17 @@
     </property>
     <addaction name="action_ADDDENOISE"/>
    </widget>
+   <widget class="QMenu" name="menu_F_2">
+    <property name="title">
+     <string>图像滤波(&amp;F)</string>
+    </property>
+    <addaction name="action_MedianFilter"/>
+   </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_G"/>
    <addaction name="menu_O"/>
    <addaction name="menu_H"/>
+   <addaction name="menu_F_2"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -135,6 +142,14 @@
    </property>
    <property name="toolTip">
     <string>相加去噪(A)</string>
+   </property>
+  </action>
+  <action name="action_MedianFilter">
+   <property name="text">
+    <string>中值滤波(&amp;M)</string>
+   </property>
+   <property name="toolTip">
+    <string>中值滤波(M)</string>
    </property>
   </action>
  </widget>

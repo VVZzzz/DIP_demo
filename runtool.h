@@ -12,6 +12,7 @@ void rgb2gray(QImage& img);
 QImage regray(QImage& img, int n);
 QImage deresolution(QImage& img, int n);
 QImage adddenoise(QImage& img, QStringList& fileslist);
+QImage medianFilter(QImage& img, int radius);
 }  // namespace RunTool
 
 #endif  // RUNTOOL_H

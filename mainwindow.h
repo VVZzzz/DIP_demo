@@ -47,6 +47,8 @@ class MainWindow : public QMainWindow {
 
   void on_action_ADDDENOISE_triggered();
 
+  void on_action_MedianFilter_triggered();
+
 private:
   enum PROCESS_CATEGORY { DERESOLUTION, DEGRAY };
   void cleanImage();

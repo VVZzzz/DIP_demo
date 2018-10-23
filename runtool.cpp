@@ -1,4 +1,5 @@
 ﻿#include "runtool.h"
+#include "myfilter.h"
 
 namespace RunTool {
 
@@ -112,6 +113,11 @@ QImage adddenoise(QImage &img, QStringList &fileslist) {
   delete pVal;
 
   return newimg;
+}
+
+QImage medianFilter(QImage &img, int radius) {
+  MyFilter medianfilter(MyFilter::FILTER::MEDIAN, radius, img);
+  return medianfilter.applyFilter();
 }
 
 }  // namespace RunTool

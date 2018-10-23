@@ -170,5 +170,20 @@ void MainWindow::on_action_ADDDENOISE_triggered() {
     QImage newimg = RunTool::adddenoise(img, fileslist);
     updateRighView(QPixmap::fromImage(newimg));
   }
-  QMessageBox::information(this,QString("Success!"),QString("operator compelet!"));
+  QMessageBox::information(this, QString("Success!"),
+                           QString("operator compelet!"));
+}
+
+void MainWindow::on_action_MedianFilter_triggered() {
+  bool ok;
+  int value =
+      QInputDialog::getInt(this, tr("Media Filter"),
+                           "Input a value for radius(1~30)", 3, 1, 30, 1, &ok);
+  if (ok) {
+    QImage img = leftPixmapItem->pixmap().toImage();
+    QImage newimg = RunTool::medianFilter(img, value);
+    updateRighView(QPixmap::fromImage(newimg));
+  }
+  QMessageBox::information(this, QString("Success!"),
+                           QString("operator compelet!"));
 }

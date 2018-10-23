@@ -30,14 +30,16 @@ SOURCES += \
     runtool.cpp \
     mygraphicsview.cpp \
     slidedlg.cpp \
-    myhistogram.cpp
+    myhistogram.cpp \
+    myfilter.cpp
 
 HEADERS += \
         mainwindow.h \
     runtool.h \
     mygraphicsview.h \
     slidedlg.h \
-    myhistogram.h
+    myhistogram.h \
+    myfilter.h
 
 FORMS += \
         mainwindow.ui \
