@@ -238,4 +238,7 @@ void MainWindow::on_actionLaplace_L_triggered() {
   int radius = 1;  // Laplace's filter radius
   QImage img = leftPixmapItem->pixmap().toImage();
   QImage newimg = RunTool::laplaceFilter(img);
+  updateRighView(QPixmap::fromImage(newimg));
+  QMessageBox::information(this, QString("Success!"),
+                           QString("operator compelet!"));
 }

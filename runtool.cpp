@@ -190,7 +190,7 @@ QImage diff(QImage &img, QImage &secondPic) {
 }
 
 QImage laplaceFilter(QImage &img) {
-  MyFilter medianfilter(MyFilter::FILTER::MEDIAN, 1, img);
+  MyFilter medianfilter(MyFilter::FILTER::LAPLACE, 1, img);
   QImage newimg = medianfilter.applyFilter();
   return newimg;
 }

@@ -1,4 +1,5 @@
 ﻿#include "myfilter.h"
+#include <math.h>
 #include <QDebug>
 #include <algorithm>
 #include <queue>
@@ -107,7 +108,11 @@ MyFilter::MyFilter(MyFilter::FILTER type, int r, const QImage &img)
 }
 
 QImage MyFilter::applyFilter() {
-  std::set<uchar> q_g, q_b, q_r;
+  std::vector<uchar> q_g, q_b, q_r;
+  int sqr = (2 * radius + 1) * (2 * radius + 1);
+  q_b.reserve(sqr);
+  q_g.reserve(sqr);
+  q_r.reserve(sqr);
   switch (filterType) {
     case MEDIAN:
       for (int j = radius; j < h + radius; j++) {
@@ -118,21 +123,16 @@ QImage MyFilter::applyFilter() {
           q_r.clear();
           for (int i_ = -1 * radius; i_ <= radius; i_++)
             for (int j_ = -1 * radius; j_ <= radius; j_++) {
-              q_b.insert(extendimg[j + j_][i + i_][0]);
-              q_g.insert(extendimg[j + j_][i + i_][1]);
-              q_r.insert(extendimg[j + j_][i + i_][2]);
+              q_b.push_back(extendimg[j + j_][i + i_][0]);
+              q_g.push_back(extendimg[j + j_][i + i_][1]);
+              q_r.push_back(extendimg[j + j_][i + i_][2]);
             }
-          auto b_itr = q_b.begin();
-          auto g_itr = q_g.begin();
-          auto r_itr = q_r.begin();
-          int c = 0, d = 0, e = 0;
-          while (c++ <= (q_b.size() >> 1)) b_itr++;
-          while (d++ <= (q_g.size() >> 1)) g_itr++;
-          while (e++ <= (q_r.size() >> 1)) r_itr++;
-
-          *(originlpix + (i - radius) * 4) = *(b_itr);
-          *(originlpix + (i - radius) * 4 + 1) = *(g_itr);
-          *(originlpix + (i - radius) * 4 + 2) = *(r_itr);
+          std::sort(q_b.begin(), q_b.end());
+          std::sort(q_g.begin(), q_g.end());
+          std::sort(q_r.begin(), q_r.end());
+          *(originlpix + (i - radius) * 4) = q_b[(sqr >> 1)];
+          *(originlpix + (i - radius) * 4 + 1) = q_g[(sqr >> 1)];
+          *(originlpix + (i - radius) * 4 + 2) = q_r[(sqr >> 1)];
         }
       }
       break;
@@ -147,9 +147,9 @@ QImage MyFilter::applyFilter() {
               g_ += (extendimg[i + i_][j + j_][1]);
               r_ += (extendimg[i + i_][j + j_][2]);
             }
-          b_ /= (2 * radius + 1) * (2 * radius + 1);
-          g_ /= (2 * radius + 1) * (2 * radius + 1);
-          r_ /= (2 * radius + 1) * (2 * radius + 1);
+          b_ /= sqr;
+          g_ /= sqr;
+          r_ /= sqr;
 
           *(originlpix + (j - radius) * 4) = b_;
           *(originlpix + (j - radius) * 4 + 1) = g_;
@@ -165,17 +165,19 @@ QImage MyFilter::applyFilter() {
           int b_ = 0, g_ = 0, r_ = 0;
           for (int i_ = -1 * radius; i_ <= radius; i_++)
             for (int j_ = -1 * radius; j_ <= radius; j_++) {
-              b_ += (extendimg[i + i_][j + j_][0]);
-              g_ += (extendimg[i + i_][j + j_][1]);
-              r_ += (extendimg[i + i_][j + j_][2]);
+              b_ += (extendimg[i + i_][j + j_][0]) *
+                    filter[radius + i_][radius + j_];
+              g_ += (extendimg[i + i_][j + j_][1]) *
+                    filter[radius + i_][radius + j_];
+              r_ += (extendimg[i + i_][j + j_][2]) *
+                    filter[radius + i_][radius + j_];
             }
-          b_ /= radius * radius;
-          g_ /= radius * radius;
-          r_ /= radius * radius;
 
-          *(originlpix + (j - radius) * 4) = 0;
-          *(originlpix + (j - radius) * 4 + 1) = 0;
-          *(originlpix + (j - radius) * 4 + 2) = 0;
+          *(originlpix + (j - radius) * 4) = std::abs(extendimg[i][j][0] - b_);
+          *(originlpix + (j - radius) * 4 + 1) =
+              std::abs(extendimg[i][j][1] - g_);
+          *(originlpix + (j - radius) * 4 + 2) =
+              std::abs(extendimg[i][j][2] - r_);
         }
       }
       break;
