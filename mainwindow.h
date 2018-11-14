@@ -55,6 +55,8 @@ class MainWindow : public QMainWindow {
 
   void on_actionHistEqual_M_triggered();
 
+  void on_actionLaplace_L_triggered();
+
 private:
   enum PROCESS_CATEGORY { DERESOLUTION, DEGRAY };
   void cleanImage();

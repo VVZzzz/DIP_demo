@@ -15,6 +15,7 @@ QImage adddenoise(QImage& img, QStringList& fileslist);
 QImage medianFilter(QImage& img, int radius);
 QImage meanFilter(QImage& img, int radius);
 QImage diff(QImage& img, QImage& secondPic);
+QImage laplaceFilter(QImage& img);
 }  // namespace RunTool
 
 #endif  // RUNTOOL_H

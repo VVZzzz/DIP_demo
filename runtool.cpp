@@ -189,4 +189,10 @@ QImage diff(QImage &img, QImage &secondPic) {
   return img;
 }
 
+QImage laplaceFilter(QImage &img) {
+  MyFilter medianfilter(MyFilter::FILTER::MEDIAN, 1, img);
+  QImage newimg = medianfilter.applyFilter();
+  return newimg;
+}
+
 }  // namespace RunTool

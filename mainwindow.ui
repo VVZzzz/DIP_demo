@@ -73,6 +73,7 @@
     </property>
     <addaction name="action_MedianFilter"/>
     <addaction name="actionMean_J"/>
+    <addaction name="actionLaplace_L"/>
    </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_G"/>
@@ -177,6 +178,14 @@
    </property>
    <property name="toolTip">
     <string>直方图均衡(M)</string>
+   </property>
+  </action>
+  <action name="actionLaplace_L">
+   <property name="text">
+    <string>拉普拉斯滤波(&amp;L)</string>
+   </property>
+   <property name="toolTip">
+    <string>拉普拉斯滤波(L)</string>
    </property>
   </action>
  </widget>

@@ -195,7 +195,7 @@ void MainWindow::on_actionMean_J_triggered() {
                            "Input a value for radius(1~30)", 3, 1, 30, 1, &ok);
   if (ok) {
     QImage img = leftPixmapItem->pixmap().toImage();
-    QImage newimg = RunTool::medianFilter(img, value);
+    QImage newimg = RunTool::meanFilter(img, value);
     updateRighView(QPixmap::fromImage(newimg));
   }
   QMessageBox::information(this, QString("Success!"),
@@ -232,4 +232,10 @@ void MainWindow::on_actionHistEqual_M_triggered() {
   updateRighView(QPixmap::fromImage(newimg));
   QMessageBox::information(this, QString("Success!"),
                            QString("operator compelet!"));
+}
+
+void MainWindow::on_actionLaplace_L_triggered() {
+  int radius = 1;  // Laplace's filter radius
+  QImage img = leftPixmapItem->pixmap().toImage();
+  QImage newimg = RunTool::laplaceFilter(img);
 }
