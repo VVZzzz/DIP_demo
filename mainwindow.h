@@ -49,6 +49,12 @@ class MainWindow : public QMainWindow {
 
   void on_action_MedianFilter_triggered();
 
+  void on_actionMean_J_triggered();
+
+  void on_actionDiff_D_triggered();
+
+  void on_actionHistEqual_M_triggered();
+
 private:
   enum PROCESS_CATEGORY { DERESOLUTION, DEGRAY };
   void cleanImage();

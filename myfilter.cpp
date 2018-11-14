@@ -5,19 +5,12 @@
 
 MyFilter::MyFilter() {
   extendimg = nullptr;
-  newimg = nullptr;
   radius = 0;
   filterType = MEAN;
 }
 
 MyFilter::~MyFilter() {
-  if (newimg) {
-    delete[] newimg;
-    newimg = nullptr;
-  }
-
-  /*
-  if (extendimg) {
+  if (extendimg != nullptr) {
     for (int j = 0; j < h + (radius * 2); j++) {
       for (int k = 0; k < w + (radius * 2); k++) {
         delete[] extendimg[j][k];
@@ -27,10 +20,10 @@ MyFilter::~MyFilter() {
     delete extendimg;
     extendimg = nullptr;
   }
-  */
 }
 
-MyFilter::MyFilter(MyFilter::FILTER type, int r, const QImage &img) {
+MyFilter::MyFilter(MyFilter::FILTER type, int r, const QImage &img)
+    : newimg(img.width(), img.height(), img.format()) {
   filterType = type;
   radius = r;
   w = img.width();
@@ -49,16 +42,13 @@ MyFilter::MyFilter(MyFilter::FILTER type, int r, const QImage &img) {
       break;
   }
 
-  //初始化空的newimg
-  newimg = new uchar[w * h * 4]{0};
-
   //初始化extendImg
 
-  extendimg = new uchar **[h + (r * 2)];  //[0]:b [1]:g [2]:r
-  for (int i = 0; i < h + (r * 2); i++) {
-    extendimg[i] = new uchar *[w + (r * 2)];
-    for (int j = 0; j < w + (r * 2); j++) {
-      extendimg[i][j] = new uchar[3]{0};
+  extendimg = new uchar **[h + (r << 1)];  //[0]:b [1]:g [2]:r
+  for (int i = 0; i < h + (r << 1); i++) {
+    extendimg[i] = new uchar *[w + (r << 1)];
+    for (int j = 0; j < w + (r << 1); j++) {
+      extendimg[i][j] = new uchar[3]{255};
     }
   }
   // extendImg的原图部分
@@ -75,12 +65,20 @@ MyFilter::MyFilter(MyFilter::FILTER type, int r, const QImage &img) {
   for (int i = 0, i_ = w - r; i < r; i++, i_++) {
     for (int j = 0; j < h; j++) {
       const uchar *originlpix = img.scanLine(j);
-      extendimg[j][i][0] = *(originlpix + i * 4);
-      extendimg[j][i][1] = *(originlpix + i * 4 + 1);
-      extendimg[j][i][2] = *(originlpix + i * 4 + 2);
-      extendimg[j][i_ + r][0] = *(originlpix + i_ * 4);
-      extendimg[j][i_ + r][1] = *(originlpix + i_ * 4 + 1);
-      extendimg[j][i_ + r][2] = *(originlpix + i_ * 4 + 2);
+      extendimg[j + r][i][0] = *(originlpix + i * 4);
+      extendimg[j + r][i][1] = *(originlpix + i * 4 + 1);
+      extendimg[j + r][i][2] = *(originlpix + i * 4 + 2);
+      extendimg[j + r][i_ + 2 * r][0] = *(originlpix + i_ * 4);
+      extendimg[j + r][i_ + 2 * r][1] = *(originlpix + i_ * 4 + 1);
+      extendimg[j + r][i_ + 2 * r][2] = *(originlpix + i_ * 4 + 2);
+      /*
+    extendimg[j + r][i][0] = 0;
+    extendimg[j + r][i][1] = 0;
+    extendimg[j + r][i][2] = 0;
+    extendimg[j + r][i_ + r][0] = 0;
+    extendimg[j + r][i_ + r][1] = 0;
+    extendimg[j + r][i_ + r][2] = 0;
+    */
     }
   }
   //再上下边界
@@ -89,36 +87,47 @@ MyFilter::MyFilter(MyFilter::FILTER type, int r, const QImage &img) {
       extendimg[i][j][0] = extendimg[i + r][j][0];
       extendimg[i][j][1] = extendimg[i + r][j][1];
       extendimg[i][j][2] = extendimg[i + r][j][2];
-      extendimg[i_][j][0] = extendimg[i_ - r][j][0];
-      extendimg[i_][j][1] = extendimg[i_ - r][j][1];
-      extendimg[i_][j][2] = extendimg[i_ - r][j][2];
+      extendimg[i_ + r][j][0] = extendimg[i_][j][0];
+      extendimg[i_ + r][j][1] = extendimg[i_][j][1];
+      extendimg[i_ + r][j][2] = extendimg[i_][j][2];
+      /*
+    extendimg[i][j][0] = 0;
+    extendimg[i][j][1] = 0;
+    extendimg[i][j][2] = 0;
+    extendimg[i_ + r][j][0] = 0;
+    extendimg[i_ + r][j][1] = 0;
+    extendimg[i_ + r][j][2] = 0;
+    */
     }
 }
 
 QImage MyFilter::applyFilter() {
+  std::vector<uchar> q_b;
+  q_b.reserve((2 * radius + 1) * (2 * radius + 1) + 1);
   switch (filterType) {
     case MEDIAN:
-      for (int i = radius; i < h + radius; i++) {
-        for (int j = radius; j < w + radius; j++) {
-          std::vector<uchar> q_b, q_g, q_r;
+      q_b.clear();
+      for (int j = radius; j < h + radius; j++) {
+        uchar *originlpix = newimg.scanLine(j - radius);
+        for (int i = radius; i < w + radius; i++) {
+          q_b.clear();
           for (int i_ = -1 * radius; i_ <= radius; i_++)
             for (int j_ = -1 * radius; j_ <= radius; j_++) {
-              q_b.push_back(extendimg[i + i_][j + j_][0]);
-              q_g.push_back(extendimg[i + i_][j + j_][1]);
-              q_r.push_back(extendimg[i + i_][j + j_][2]);
+              q_b.push_back(extendimg[j + j_][i + i_][0]);
             }
-          std::sort(q_b.begin(), q_b.end());
-          std::sort(q_g.begin(), q_g.end());
-          std::sort(q_r.begin(), q_r.end());
 
-          newimg[((i - radius) * w + (j - radius)) << 2] = q_b[radius];
-          newimg[(((i - radius) * w + (j - radius)) << 2) + 1] = q_g[radius];
-          newimg[(((i - radius) * w + (j - radius)) << 2) + 2] = q_r[radius];
+          std::sort(q_b.begin(), q_b.end());
+
+          *(originlpix + (i - radius) * 4) = q_b[radius];
+          *(originlpix + (i - radius) * 4 + 1) = q_b[radius];
+          *(originlpix + (i - radius) * 4 + 2) = q_b[radius];
         }
       }
       break;
     case MEAN:
+      q_b.clear();
       for (int i = radius; i < h + radius; i++) {
+        uchar *originlpix = newimg.scanLine(i - radius);
         for (int j = radius; j < w + radius; j++) {
           int b_ = 0, g_ = 0, r_ = 0;
           for (int i_ = -1 * radius; i_ <= radius; i_++)
@@ -130,9 +139,10 @@ QImage MyFilter::applyFilter() {
           b_ /= radius * radius;
           g_ /= radius * radius;
           r_ /= radius * radius;
-          newimg[(i - radius) * w * 4 + (j - radius) * 4] = b_;
-          newimg[(i - radius) * w * 4 + (j - radius) * 4 + 1] = g_;
-          newimg[(i - radius) * w * 4 + (j - radius) * 4 + 2] = r_;
+
+          *(originlpix + (j - radius) * 4) = 0;
+          *(originlpix + (j - radius) * 4 + 1) = 0;
+          *(originlpix + (j - radius) * 4 + 2) = 0;
         }
       }
 
@@ -140,5 +150,5 @@ QImage MyFilter::applyFilter() {
     default:
       break;
   }
-  return QImage(newimg, w, h, QImage::Format_RGB32);
+  return newimg;
 }

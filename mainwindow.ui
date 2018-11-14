@@ -52,6 +52,7 @@
     </property>
     <addaction name="action_DEGARY"/>
     <addaction name="action_HISTOGRAM"/>
+    <addaction name="actionHistEqual_M"/>
    </widget>
    <widget class="QMenu" name="menu_O">
     <property name="title">
@@ -64,12 +65,14 @@
      <string>去噪差分(&amp;H)</string>
     </property>
     <addaction name="action_ADDDENOISE"/>
+    <addaction name="actionDiff_D"/>
    </widget>
    <widget class="QMenu" name="menu_F_2">
     <property name="title">
      <string>图像滤波(&amp;F)</string>
     </property>
     <addaction name="action_MedianFilter"/>
+    <addaction name="actionMean_J"/>
    </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_G"/>
@@ -150,6 +153,30 @@
    </property>
    <property name="toolTip">
     <string>中值滤波(M)</string>
+   </property>
+  </action>
+  <action name="actionMean_J">
+   <property name="text">
+    <string>均值滤波(&amp;J)</string>
+   </property>
+   <property name="toolTip">
+    <string>均值滤波(J)</string>
+   </property>
+  </action>
+  <action name="actionDiff_D">
+   <property name="text">
+    <string>图像差分(&amp;D)</string>
+   </property>
+   <property name="toolTip">
+    <string>图像差分(D)</string>
+   </property>
+  </action>
+  <action name="actionHistEqual_M">
+   <property name="text">
+    <string>直方图均衡(&amp;M)</string>
+   </property>
+   <property name="toolTip">
+    <string>直方图均衡(M)</string>
    </property>
   </action>
  </widget>

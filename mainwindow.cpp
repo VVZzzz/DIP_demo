@@ -187,3 +187,49 @@ void MainWindow::on_action_MedianFilter_triggered() {
   QMessageBox::information(this, QString("Success!"),
                            QString("operator compelet!"));
 }
+
+void MainWindow::on_actionMean_J_triggered() {
+  bool ok;
+  int value =
+      QInputDialog::getInt(this, tr("Mean Filter"),
+                           "Input a value for radius(1~30)", 3, 1, 30, 1, &ok);
+  if (ok) {
+    QImage img = leftPixmapItem->pixmap().toImage();
+    QImage newimg = RunTool::medianFilter(img, value);
+    updateRighView(QPixmap::fromImage(newimg));
+  }
+  QMessageBox::information(this, QString("Success!"),
+                           QString("operator compelet!"));
+}
+
+void MainWindow::on_actionDiff_D_triggered() {
+  QString secondPic;
+  secondPic = QFileDialog::getOpenFileName(
+      this, tr("Open image"), "C:/Users",
+      tr("All Files (*);;"
+         "All Images (*.bpm *.gif *.jpg *.jpeg *.png *.ppm *.xbm *.xpm);;"
+         "Image BPM (*.bpm);;"
+         "Image GIF (*.gif);;"
+         "Image JPG (*.jpg);;"
+         "Image JPEG (*.jpeg);;"
+         "Image PNG (*.png);;"
+         "Image PPM (*.ppm);;"
+         "Image XBM (*.xbm);;"
+         "Image XPM (*.xpm);;"));
+  if (!secondPic.isEmpty()) {
+    QImage img = leftPixmapItem->pixmap().toImage();
+    QImage img2(secondPic);
+    QImage newimg = RunTool::diff(img, img2);
+    updateRighView(QPixmap::fromImage(newimg));
+  }
+}
+
+void MainWindow::on_actionHistEqual_M_triggered() {
+  QImage img = leftPixmapItem->pixmap().toImage();
+  MyHistogram hist;
+  hist.setHistogram(img);
+  QImage newimg = hist.histEqual(img);
+  updateRighView(QPixmap::fromImage(newimg));
+  QMessageBox::information(this, QString("Success!"),
+                           QString("operator compelet!"));
+}

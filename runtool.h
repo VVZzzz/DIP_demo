@@ -13,6 +13,8 @@ QImage regray(QImage& img, int n);
 QImage deresolution(QImage& img, int n);
 QImage adddenoise(QImage& img, QStringList& fileslist);
 QImage medianFilter(QImage& img, int radius);
+QImage meanFilter(QImage& img, int radius);
+QImage diff(QImage& img, QImage& secondPic);
 }  // namespace RunTool
 
 #endif  // RUNTOOL_H

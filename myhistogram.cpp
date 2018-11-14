@@ -9,12 +9,16 @@ MyHistogram::MyHistogram(QWidget *parent) : QLabel(parent) {
       blueHistogram[257] = -1;
   grayHistogram[258] = redHistogram[258] = greenHistogram[258] =
       blueHistogram[258] = -1;
+  width = 0;
+  height = 0;
 }
 
 void MyHistogram::setHistogram(const QImage &img) {
   QImage grayImg(img);
   RunTool::rgb2gray(grayImg);
   unsigned w = img.width(), h = img.height();
+  width = w;
+  height = h;
   for (int y = 0; y < h; y++) {
     const uchar *lpix = img.scanLine(y);
     const uchar *lpix2 = grayImg.scanLine(y);
@@ -157,4 +161,37 @@ void MyHistogram::drawHistogram(int xBase, int yBase, int height, int flag) {
                    yBase - height + 7);
   painter.drawLine(xBase + 256 + 2, yBase - height, xBase + 256 + 2 + 4,
                    yBase - height + 7);
+}
+
+QImage MyHistogram::histEqual(const QImage &img) {
+  QImage newimg(width, height, QImage::Format_RGB32);
+  uchar B_Transfer[256] = {0};  //定义一个Tansfer数组，用来保存转换后的灰度值
+  uchar G_Transfer[256] = {0};
+  uchar R_Transfer[256] = {0};
+
+  for (int i = 0; i < 255; i++) {
+    int R_sum = 0;
+    int G_sum = 0;
+    int B_sum = 0;
+    for (int j = 0; j <= i; j++) {
+      B_sum += blueHistogram[j];
+      G_sum += greenHistogram[j];
+      R_sum += redHistogram[j];
+    }
+    B_Transfer[i] = (int)(B_sum * 255 / (width * height) +
+                          0.5);  //即int(a+0.5)是对a进行四舍五入
+    G_Transfer[i] = (int)(G_sum * 255 / (width * height) + 0.5);
+    R_Transfer[i] = (int)(R_sum * 255 / (width * height) + 0.5);
+  }
+
+  for (int j = 0; j < height; j++) {
+    const uchar *originlpix = img.scanLine(j);
+    uchar *newlpix = newimg.scanLine(j);
+    for (int k = 0; k < width; k++) {
+      *(newlpix + k * 4) = B_Transfer[*(originlpix + k * 4)];
+      *(newlpix + k * 4 + 1) = G_Transfer[*(originlpix + k * 4 + 1)];
+      *(newlpix + k * 4 + 2) = R_Transfer[*(originlpix + k * 4 + 2)];
+    }
+  }
+  return newimg;
 }

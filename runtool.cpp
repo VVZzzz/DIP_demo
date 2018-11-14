@@ -117,7 +117,76 @@ QImage adddenoise(QImage &img, QStringList &fileslist) {
 
 QImage medianFilter(QImage &img, int radius) {
   MyFilter medianfilter(MyFilter::FILTER::MEDIAN, radius, img);
-  return medianfilter.applyFilter();
+  QImage newimg = medianfilter.applyFilter();
+  return newimg;
+}
+
+QImage meanFilter(QImage &img, int radius) {
+  MyFilter meanfilter(MyFilter::FILTER::MEAN, radius, img);
+  QImage newimg = meanfilter.applyFilter();
+  return newimg;
+}
+
+QImage diff(QImage &img, QImage &secondPic) {
+  int R_min = 600;
+  int G_min = 600;
+  int B_min = 600;
+  int R_max = -600;
+  int G_max = -600;
+  int B_max = -600;
+  int Flag_R_max = 0;
+  int Flag_G_max = 0;
+  int Flag_B_max = 0;
+  unsigned w = img.width(), h = img.height();
+  for (int j = 0; j < h; j++) {
+    uchar *originlpix = img.scanLine(j);
+    uchar *secondpix = secondPic.scanLine(j);
+    for (int k = 0; k < w; k++) {
+      int B = *(originlpix + k * 4 + 0);  // B   用循环访问图像的像素值
+      int G = *(originlpix + k * 4 + 1);  // G
+      int R = *(originlpix + k * 4 + 2);  // R
+
+      int B_temp = *(secondpix + k * 4 + 0);  // B   用循环访问图像的像素值
+      int G_temp = *(secondpix + k * 4 + 1);  // G
+      int R_temp = *(secondpix + k * 4 + 2);  // R
+
+      int B_DIF = B - B_temp;
+      int G_DIF = G - G_temp;
+      int R_DIF = R - R_temp;
+
+      // if (B_DIF < 0) B_DIF = 0;
+      // if (G_DIF < 0) G_DIF = 0;
+      // if (R_DIF < 0) R_DIF = 0;
+
+      if (B_DIF < B_min) B_min = B_DIF;  //找到B最小值
+      if (B_DIF > B_max) B_max = B_DIF;  //找到B最大值
+      if (G_DIF < G_min) G_min = G_DIF;  //找到G最小值
+      if (G_DIF > G_max) G_max = G_DIF;  //找到G最大值
+      if (R_DIF < R_min) R_min = R_DIF;  //找到R最小值
+      if (R_DIF > R_max) R_max = R_DIF;  //找到R最大值
+    }
+  }
+  /*****************以下是标定操作******************/
+  Flag_B_max = B_max - B_min;
+  Flag_G_max = G_max - G_min;
+  Flag_R_max = R_max - R_min;
+
+  for (int j = 0; j < h; j++) {
+    uchar *originlpix = img.scanLine(j);
+    uchar *secondpix = secondPic.scanLine(j);
+    for (int k = 0; k < w; k++) {
+      *(originlpix + k * 4 + 0) =
+          255 * (*(originlpix + k * 4 + 0) - *(secondpix + k * 4 + 0) - B_min) /
+          Flag_B_max;
+      *(originlpix + k * 4 + 1) =
+          255 * (*(originlpix + k * 4 + 1) - *(secondpix + k * 4 + 1) - G_min) /
+          Flag_G_max;
+      *(originlpix + k * 4 + 2) =
+          255 * (*(originlpix + k * 4 + 2) - *(secondpix + k * 4 + 2) - R_min) /
+          Flag_R_max;
+    }
+  }
+  return img;
 }
 
 }  // namespace RunTool

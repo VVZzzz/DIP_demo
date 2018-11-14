@@ -12,6 +12,7 @@ class MyHistogram : public QLabel {
   void setHistogram(const QImage &img);
   void paintEvent(QPaintEvent *e);
   void drawHistogram(int xBase, int yBase, int height, int flag);
+  QImage histEqual(const QImage &img);
 
  private:
   //[256]:最小灰度值   [257]:最大灰度值    [258]:histogram[i]中的最大值
@@ -19,6 +20,8 @@ class MyHistogram : public QLabel {
   int redHistogram[259] = {0};
   int greenHistogram[259] = {0};
   int blueHistogram[259] = {0};
+  int width;
+  int height;
 };
 
 #endif  // MYHISTOGRAM_H
